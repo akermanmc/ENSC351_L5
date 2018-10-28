@@ -11,6 +11,7 @@ using namespace std;
 int nbvar = 0; // total number of variables in input file
 int nbclauses = 0; // total number of clauses in input file
 
+// converts strings to ints
 int str_to_int (string str){
 	int num = 0;
 	stringstream str_to_int_stream(str);
@@ -18,6 +19,7 @@ int str_to_int (string str){
 	return num;
 }
 
+// parses input file into a vector of clauses (vecotrs of string values)
 vector<vector<string> > inputReadFunc(vector<vector<string> > &clause_vector){
 	string word;
 	ifstream inFile;
