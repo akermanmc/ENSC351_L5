@@ -27,7 +27,7 @@ int str_to_int (string str){
 	return num;
 }
 
-// parses input file into a vector of clauses (vecotrs of string values)
+// parses input file into a vector of clauses (vectors of string values)
 vector<vector<int> > inputReadFunc(vector<vector<int> > &clause_vector){
 	string word;
 	ifstream inFile;
@@ -85,7 +85,7 @@ int sign(int x){
 bool clause_check(vector<int> clause, int val){
 	int num_vars_found = 0; // keeps track of whether the given variable (neg or pos) is in the clause
 	bool clause_satisfied = false;
-	
+	//#pragma omp parallel for
 	for (int i = 0; i<(var_depth); i++){
 		// if variable is not found in clause at all return true
 		if((find(clause.begin(), clause.end(), (i+1)) == clause.end()) && (find(clause.begin(), clause.end(), -(i+1)) == clause.end())){
@@ -118,15 +118,19 @@ bool clause_check(vector<int> clause, int val){
 
 // checks whether all clauses are satisfied
 bool check_all_clauses(int val){
-
-	//#pragma omp parallel for
+	bool flag = false;
+	#pragma omp parallel for
 	for(int i = 0; i < clause_vector.size(); i++){
 		if (clause_check(clause_vector[i], val)){
 			continue;
 		}else{
 			//cout << "check_all_clauses returning false" << endl;
-			return false;
+			//return false;
+			flag = true;
 		}
+	}
+	if (flag == true){
+		return false;
 	}
 	//cout << "check_all_clauses returning true" << endl;
 	return true;
@@ -181,10 +185,6 @@ int main(){
 
 	// output solution
 	cout << endl << "Solution: " << endl;
-	// for (int i = 0; i<solution_vector.size(); i++){
-	// 	cout << solution_vector[i] << " ";
-	// }
-	// cout << endl;
 	cout << "v ";
 	for (int i = 0; i<solution_vector.size(); i++){
 		if (solution_vector[i] == 0)
