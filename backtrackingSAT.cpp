@@ -119,7 +119,7 @@ bool clause_check(vector<int> clause, int val){
 // checks whether all clauses are satisfied
 bool check_all_clauses(int val){
 	bool flag = false;
-	#pragma omp parallel for
+	//#pragma omp parallel for
 	for(int i = 0; i < clause_vector.size(); i++){
 		if (clause_check(clause_vector[i], val)){
 			continue;
