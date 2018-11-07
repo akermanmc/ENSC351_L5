@@ -7,6 +7,8 @@
 #include <vector>
 #include <algorithm>
 #include <omp.h>
+#include <pthread.h>
+#include <unistd.h>
 
 using namespace std;
 
@@ -14,6 +16,7 @@ int MAX = 1024;
 int nbvar = 0; // total number of variables in input file
 int nbclauses = 0; // total number of clauses in input file
 int var_depth = 0; // depth of variable backtracking
+int backtracks = 0; // counts number of backtracks
 
 vector<vector<int> > clause_vector; // vector of clauses
 vector<int> var_vector; 			// solution vector
@@ -96,7 +99,7 @@ bool clause_check(vector<int> clause, int val){
 			num_vars_found++;
 			if (temp_vector[i] == 0){
 				clause_satisfied = true;
-				continue;
+				break;
 			}
 		}
 		// if variable  is pos and in clause return true
@@ -104,7 +107,7 @@ bool clause_check(vector<int> clause, int val){
 			num_vars_found++;
 			if (temp_vector[i] == 1){
 				clause_satisfied = true;
-				continue;
+				break;
 			}
 		}
 	}
@@ -160,9 +163,22 @@ vector<int> backtrack(vector<int> var_vector){
 		temp_vector.pop_back();
 	}
 	var_depth--;
+	backtracks++;
 	//cout << "backtracking" << endl;
 	vector<int> empty_vector;
 	return empty_vector;
+}
+
+void* backtrackPrinting(void * arg)
+{
+	bool* keepgoing = (bool*) arg;
+	while(*keepgoing)
+	{
+		cout<<"No. of backtracks: "<<backtracks<<endl;
+		sleep(2);
+	}
+	
+	pthread_exit(NULL);
 }
 
 int main(){
@@ -178,23 +194,29 @@ int main(){
 	cout << endl;
 	cout << "num vars: " << nbvar << endl << "num clauses: " << nbclauses << endl;
 
+	bool keepgoing = true;
+	pthread_t printingThread;
+	pthread_create(&printingThread, NULL, backtrackPrinting, &keepgoing);
+	
 	// call backtracking function
 	vector<int> solution_vector = backtrack(var_vector);
 
-	// TO DO: 
-// need to "print a progress report on how many backtracks have occurred to date (cumulative) every two seconds"
-
+	keepgoing = false;
+	pthread_join(printingThread, NULL);
+	
 	// output solution
-	cout << endl << "Solution: " << endl;
-	cout << "v ";
-	for (int i = 0; i<solution_vector.size(); i++){
-		if (solution_vector[i] == 0)
-			cout << -(i+1);
-		if (solution_vector[i] == 1)
-			cout << (i+1);
-		cout << " ";
+	if(solution_vector.size() == 0)
+		cout<< "No Solution."<<endl;
+	else{
+		cout << endl << "Solution: " << endl;
+		for (int i = 0; i<solution_vector.size(); i++){
+			if (solution_vector[i] == 0)
+				cout << -(i+1);
+			if (solution_vector[i] == 1)
+				cout << (i+1);
+			cout << " ";
+		}
+		cout << endl;
 	}
-	cout << endl;
-
 	return 0;
 }
