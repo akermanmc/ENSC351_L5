@@ -1,11 +1,11 @@
 CC=g++
-CFLAGS= -fopenmp -lpthread
+CXXFLAGS= -fopenmp -lpthread
 
 %.o: %.c
-	$(CC) -c -o $@ $^ $(CFLAGS)
+	$(CC) -c -o $@ $^ $(CXXFLAGS)
 
 output: backtrackingSAT.o 
-	$(CC) -o $@ $^ $(CFLAGS)
+	$(CC) -o $@ $^ $(CXXFLAGS)
 	
 clean: 
 	rm *.o

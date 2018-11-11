@@ -185,14 +185,14 @@ int main(){
 	clause_vector = inputReadFunc(clause_vector);
 
 	//output problem formulation
-	for (int i = 0; i<clause_vector.size(); i++){
-		for (int j = 0; j<clause_vector[i].size(); j++){
-			cout << clause_vector[i][j] << " ";
-		}
-		cout << endl;
-	}
-	cout << endl;
-	cout << "num vars: " << nbvar << endl << "num clauses: " << nbclauses << endl;
+	// for (int i = 0; i<clause_vector.size(); i++){
+	// 	for (int j = 0; j<clause_vector[i].size(); j++){
+	// 		cout << clause_vector[i][j] << " ";
+	// 	}
+	// 	cout << endl;
+	// }
+	// cout << endl;
+	// cout << "num vars: " << nbvar << endl << "num clauses: " << nbclauses << endl;
 
 	bool keepgoing = true;
 	pthread_t printingThread;
